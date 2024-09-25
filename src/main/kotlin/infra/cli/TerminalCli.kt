@@ -2,6 +2,8 @@ package infra.cli
 
 import application.AddItemToMenuHandler
 import application.AddMenuItem
+import application.RestaurantNotFoundException
+import domain.InvalidFieldException
 import domain.RestaurantRepository
 
 class TerminalCli(private val handler: AddItemToMenuHandler, private val repository: RestaurantRepository) {
@@ -39,15 +41,12 @@ class TerminalCli(private val handler: AddItemToMenuHandler, private val reposit
             val (restaurantId, category, name, price) = input.split(",")
             val command = AddMenuItem(restaurantId, category, name, price.toDouble())
             handler.handle(command)
-        } catch(e: Exception) {
-            /*
-            Gestionar errores e informar al cliente. Incluir el código http que habríamos devuelto si esto fuese un controller.
-                - En caso de problema por validación, devolver código 400 e imprimir por pantalla campos que no son válidos
-                - En caso de problema por demasiados items, devolver código 409
-                - En caso de que no exista el restaurante, devolver código 404""".trimMargin())
-             */
-            println("Something went wrong!")
-
+        } catch(e: InvalidFieldException) {
+            println("400 - Bad Request: ${e.message}")
+        } catch (e: IllegalStateException) {
+            println("409 - Conflict - ${e.message}")
+        } catch(e: RestaurantNotFoundException) {
+            println("404 - Not Found - ${e.message}")
         }
     }
 }
