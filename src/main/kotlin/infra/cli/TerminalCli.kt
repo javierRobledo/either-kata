@@ -2,11 +2,14 @@ package infra.cli
 
 import application.AddItemToMenuHandler
 import application.AddMenuItem
+import domain.RestaurantRepository
 
-class TerminalCli(private val handler: AddItemToMenuHandler) {
+class TerminalCli(private val handler: AddItemToMenuHandler, private val repository: RestaurantRepository) {
 
-    //write a function that reads the input from the terminal and calls the handler
     fun loop() {
+        println("Current status:")
+        repository.findAll().forEach(::println)
+        println("----------------")
         println("Choose next operation:")
         println("1. Add item to menu")
         println("2. Exit")
@@ -14,10 +17,14 @@ class TerminalCli(private val handler: AddItemToMenuHandler) {
         when(option) {
             "1" -> {
                 addMenuItem()
+                println()
                 loop()
             }
             "2" -> return
-            else -> loop()
+            else -> {
+                println()
+                loop()
+            }
         }
     }
 

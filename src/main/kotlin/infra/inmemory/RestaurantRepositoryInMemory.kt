@@ -9,4 +9,6 @@ class RestaurantRepositoryInMemory(private val restaurants: MutableMap<String, R
     override fun save(restaurant: Restaurant) {
         restaurants[restaurant.id] = restaurant
     }
+
+    override fun findAll(): List<Restaurant> = restaurants.values.toList()
 }
